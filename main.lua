@@ -262,7 +262,11 @@ function random_cap()
   os.execute("setterm -foreground white")
   print("\n"..substituir_numeros(formatar_versiculos(texto, termWidth)).."\n")
   os.execute("setterm -foreground green")
-  centerText("Verse Gecko\n\n\n\n")
+  centerText("Verse Gecko")
+  os.execute("setterm -foreground white --half-bright on")
+  --centerText("https://github.com/suntzar/Verse-Gecko-Terminal")
+  print("\n\n\n\n")
+  
  else
   -- Printar uma mensagem de erro
  cls()
