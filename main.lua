@@ -234,7 +234,7 @@ function random_cap()
     encontrado = true
     -- Não adicionar a linha ao texto
   -- Verificar se a linha contém o nome do livro e um número diferente do capítulo
-  elseif linha:match("^" .. livro .. " %d+$") or linha:match("^" .. livro2 .. " %d+$") then
+  elseif linha:match(livro) or linha:match(livro2) then
     -- Verificar se já encontrou o capítulo
     if encontrado then
       -- Parar de ler o arquivo
