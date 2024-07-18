@@ -16,6 +16,8 @@ apt install git -y
 apt install lua54 -y
 
 apt install figlet -y
+
+git clone https://github.com/suntzar/Verse-Gecko-Terminal.git
 ```
 
 3. Execute o script no terminal ou prompt de comando digitando:
