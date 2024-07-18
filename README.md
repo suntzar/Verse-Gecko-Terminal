@@ -1,4 +1,4 @@
-# Gerador de Capítulo Aleatório da Bíblia
+# Verse Gecko: Gerador de Capítulo Aleatório da Bíblia
 
 Este é um pequeno script em Lua que escolhe aleatoriamente um capítulo da Bíblia. Você pode usar essa funcionalidade para obter uma passagem aleatória das Escrituras.
 
