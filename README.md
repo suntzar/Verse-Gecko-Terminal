@@ -17,6 +17,8 @@ apt install lua54 -y
 
 apt install figlet -y
 
+apt install ncurses-utils -y
+
 git clone https://github.com/suntzar/Verse-Gecko-Terminal.git
 ```
 
