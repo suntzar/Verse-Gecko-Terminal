@@ -263,7 +263,7 @@ function random_cap()
  if encontrado then
   -- Printar o texto na tela com os versículos formatados
   cls()
-  os.execute("setterm -foreground magenta")
+  os.execute("setterm -foreground green")
  -- os.execute("figlet -f standard BIBLIA")
  -- print("O livro e capítulo escolhidos são: \n")
   os.execute("figlet -f small "..FormatarAcentos(livro).." "..capitulo)
@@ -272,7 +272,7 @@ function random_cap()
  else
   -- Printar uma mensagem de erro
  cls()
-  os.execute("setterm -foreground magenta")
+  os.execute("setterm -foreground green")
   os.execute("figlet -f small BIBLIA")
   os.execute("setterm -foreground white")
   print("O livro e capítulo escolhidos são: " .. livro .. " | " .. capitulo.."\n")
