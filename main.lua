@@ -3,17 +3,11 @@ function cls()
  os.execute("clear")
 end
 
+-- Define a aleatoriedade de acordo com o tempo
 math.randomseed(os.time())
 
--- Verifica se o figlet está instalado
-function figlet()
- cmd = os.execute("figlet -v")
- if cmd == 0 then
-  print("Figlet está instalado!")
- else
-  os.execute("pkg install figlet -y")
- end
-end
+-- Identifica a largura do terminal em caracteres
+local termWidth = tonumber(io.popen('tput cols'):read('*a'))
 
 -- Definir uma tabela com os nomes e números dos livros da Bíblia
 livros = {
@@ -95,14 +89,14 @@ function quebrar_linha(str, max)
   -- Dividir a string em palavras separadas por espaços
   for palavra in str:gmatch("%S+") do
     -- Verificar se a palavra cabe na linha atual
-    if comp + #palavra <= max then
+    if comp + #palavra <= (max - 20) then
       -- Adicionar a palavra à nova string
       nova_str = nova_str .. palavra .. " "
       -- Atualizar o comprimento da linha atual
       comp = comp + #palavra + 1
     else
       -- Adicionar uma quebra de linha à nova string
-      nova_str = nova_str .. "\n"
+      nova_str = nova_str .. "\n          "
       -- Adicionar a palavra à nova string
       nova_str = nova_str .. palavra .. " "
       -- Atualizar o comprimento da linha atual
@@ -142,12 +136,12 @@ function formatar_versiculos(str, max)
     -- Verificar se a linha começa com um número seguido de um espaço
     if linha:match("^%d+ ") then
       -- Adicionar uma quebra de linha à nova string
-      nova_str = nova_str .. "\n"
+      nova_str = nova_str .. "\n\n"
       -- Adicionar a linha à nova string com a quebra de linha
-      nova_str = nova_str .. quebrar_linha(linha, max) .. "\n"
+      nova_str = nova_str ..  "          " .. quebrar_linha(linha, max) .. "\n\n"
     else
       -- Adicionar a linha à nova string sem a quebra de linha
-      nova_str = nova_str .. quebrar_linha(linha, max)
+      nova_str = nova_str .. "          " ..  quebrar_linha(linha, max)
     end
   end
   -- Retornar a nova string
@@ -156,18 +150,11 @@ end
 
 function substituir_numeros(str)
   -- Criar uma tabela com os números e seus equivalentes em superescrito
-  local numeros = {
-    ["0"] = "\27[2m0\27[39m\27[0m",
-    ["1"] = "\27[2m1\27[39m\27[0m",
-    ["2"] = "\27[2m2\27[39m\27[0m",
-    ["3"] = "\27[2m3\27[39m\27[0m",
-    ["4"] = "\27[2m4\27[39m\27[0m",
-    ["5"] = "\27[2m5\27[39m\27[0m",
-    ["6"] = "\27[2m6\27[39m\27[0m",
-    ["7"] = "\27[2m7\27[39m\27[0m",
-    ["8"] = "\27[2m8\27[39m\27[0m",
-    ["9"] = "\27[2m9\27[39m\27[0m"
-  }
+  local numeros = {}
+  for i=0,9 do
+    numeros[tostring(i)] = "\27[2m"..i.."\27[39m\27[0m"
+  end
+
   -- Criar uma variável para armazenar a nova string
   local nova_str = ""
   -- Percorrer cada caractere da string
@@ -185,6 +172,10 @@ function substituir_numeros(str)
   return nova_str
 end
 
+function centerText(text)
+    local padding = (termWidth - #text) // 2
+    io.write(('\27[%dC%s\n'):format(padding, text))
+end
 
 function escolhercap(livros, numero)
  local limite = 0
@@ -255,7 +246,7 @@ function random_cap()
     texto = texto .. linha .. "\n"
   end
  end
-
+ 
  -- Fechar o arquivo
  arquivo:close()
 
@@ -263,23 +254,28 @@ function random_cap()
  if encontrado then
   -- Printar o texto na tela com os versículos formatados
   cls()
+  print("\n\n")
   os.execute("setterm -foreground green")
  -- os.execute("figlet -f standard BIBLIA")
  -- print("O livro e capítulo escolhidos são: \n")
-  os.execute("figlet -f small "..FormatarAcentos(livro).." "..capitulo)
+  os.execute("figlet -c -f small "..FormatarAcentos(livro).." "..capitulo)
   os.execute("setterm -foreground white")
-  print(substituir_numeros(formatar_versiculos(texto, 60)))
+  print("\n"..substituir_numeros(formatar_versiculos(texto, termWidth)).."\n")
+  os.execute("setterm -foreground green")
+  centerText("Verse Gecko\n\n\n\n")
  else
   -- Printar uma mensagem de erro
  cls()
+  print("\n\n")
   os.execute("setterm -foreground green")
-  os.execute("figlet -f small BIBLIA")
+  os.execute("figlet -c -f small BIBLIA")
   os.execute("setterm -foreground white")
-  print("O livro e capítulo escolhidos são: " .. livro .. " | " .. capitulo.."\n")
+  print("\n")
+  centerText("O livro e capítulo escolhidos são:\n")
+  centerText(livro .. " | " .. capitulo.."\n\n")
   os.execute("setterm -foreground red")
-  print("Capítulo não encontrado")
+  centerText("Capítulo não encontrado\n\n\n\n")
  end
 end
 
---figlet()
 random_cap()
