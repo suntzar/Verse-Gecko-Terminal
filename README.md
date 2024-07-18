@@ -23,5 +23,7 @@ git clone https://github.com/suntzar/Verse-Gecko-Terminal.git
 3. Execute o script no terminal ou prompt de comando digitando:
 
 ```bash
+cd Verse-Gecko-Terminal
+
 lua main.lua
 ```
