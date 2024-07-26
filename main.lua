@@ -1,6 +1,7 @@
 -- Definir uma função que limpe a tela
 function cls()
  os.execute("clear")
+ -- alias cls='clear' abrevia o clear
 end
 
 -- Define a aleatoriedade de acordo com o tempo
@@ -8,6 +9,14 @@ math.randomseed(os.time())
 
 -- Identifica a largura do terminal em caracteres
 local termWidth = tonumber(io.popen('tput cols'):read('*a'))
+
+red    = '\27[31m'
+green  = '\27[32m'
+yellow = '\27[33m'
+blue   = '\27[34m'
+purple = '\27[35m'
+fade   = '\27[2m'
+none   = '\27[39m\27[0m'
 
 -- Definir uma tabela com os nomes e números dos livros da Bíblia
 livros = {
@@ -172,9 +181,20 @@ function substituir_numeros(str)
   return nova_str
 end
 
-function centerText(text)
-    local padding = (termWidth - #text) // 2
-    io.write(('\27[%dC%s\n'):format(padding, text))
+function centerText(text,w)
+    local padding = (w - #text) // 2
+    print(string.rep(" ", padding)..text..string.rep(" ", padding))
+    --io.write(('\27[%dC%s\n'):format(padding, text))
+end
+
+function centerTextSTR(text,w)
+    local padding = (w - #text) // 2
+    return (('\27[%dC%s'):format(padding, text)..string.rep(" ", padding))
+end
+
+function centerTextInt(text,w)
+    local padding = (termWidth - w) // 2
+    print(string.rep(" ", padding)..text)
 end
 
 function escolhercap(livros, numero)
@@ -188,16 +208,16 @@ function escolhercap(livros, numero)
 end
 
 
-function random_cap()
+function random_cap(indice,capitulo)
 
  total = 1189
 
  -- Inicializar o gerador de números aleatórios
  math.randomseed(os.time())
  
- 
- local indice, capitulo = escolhercap(livros, math.random(1,total))
- 
+ if indice == nil then
+   indice, capitulo = escolhercap(livros, math.random(1,total))
+ end
 
  -- Escolher um livro aleatório da tabela
  --local indice = math.random(1, #livros-1)
@@ -262,9 +282,11 @@ function random_cap()
   os.execute("setterm -foreground white")
   print("\n"..substituir_numeros(formatar_versiculos(texto, termWidth)).."\n")
   os.execute("setterm -foreground green")
-  centerText("Verse Gecko")
+  centerText("Verse Gecko",termWidth)
   os.execute("setterm -foreground white --half-bright on")
   --centerText("https://github.com/suntzar/Verse-Gecko-Terminal")
+  print()
+  centerText("[Enter] Voltar",termWidth)
   print("\n\n\n\n")
   
  else
@@ -275,11 +297,130 @@ function random_cap()
   os.execute("figlet -c -f small BIBLIA")
   os.execute("setterm -foreground white")
   print("\n")
-  centerText("O livro e capítulo escolhidos são:\n")
-  centerText(livro .. " | " .. capitulo.."\n\n")
+  centerText("O livro e capítulo escolhidos são:\n",termWidth)
+  centerText(livro .. " | " .. capitulo.."\n\n",termWidth)
   os.execute("setterm -foreground red")
-  centerText("Capítulo não encontrado\n\n\n\n")
+  centerText("Capítulo não encontrado\n\n\n\n",termWidth)
  end
+ 
+ io.read()
+ choice(44,0)
 end
 
-random_cap()
+function choice(w,pag)
+  cls()
+  
+  print("\n\n"..green)
+  os.execute("figlet -c -f small GECKO")
+  os.execute("setterm --blink off -foreground white")
+  print("\n")
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  centerTextInt(" "..centerTextSTR("Um gerador de capitulos aleatórios",w+1).." ",w+1)
+  --centerText("|"..string.rep(" ", w).."|",termWidth)
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  --centerText("|"..string.rep(" ", w).."|",termWidth)
+  centerTextInt("|"..centerTextSTR("coded by L7    Gecko v0.1 (beta)",w+1).."|",w+1)
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  os.execute("setterm -foreground white --half-bright on")
+  centerTextInt("| O ultimo capitulo visto foi:",w+2)
+  centerTextInt("| Genesis 4",w+2)
+  os.execute("setterm --blink off -foreground white")
+  print("\n"..green)
+  for i = ((pag)*10+1), (pag+1)*10 do
+    local is = ""
+    if i < 10 then is = "0"..i else is = i end
+    if livros[i] and livros[i][1] ~= "FIM" then
+      centerTextInt("["..green..is.."] "..livros[i][1],w)
+    end
+  end
+  --centerText("|"..string.rep(" ", w).."|",termWidth)
+  print("\n")
+  centerTextInt("[".."88".."] MAIS...",w)
+  centerTextInt("[".."99".."] ALEATORIO",w)
+  centerTextInt("[".."00".."]".." SAIR",w)
+  print(none)
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  centerTextInt("|"..centerTextSTR("Escolha um livro",w+1).."|",w+1)
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  print("\n")
+  
+  local cmd = io.read()
+  
+  if tonumber(cmd) == 0 then bye() end
+  if tonumber(cmd) == 88 then choice(w,(pag+1)%math.floor(66/10+0.5)) end
+  if tonumber(cmd) == 99 then random_cap() end
+  
+  if tonumber(cmd) and tonumber(cmd) < 67 and tonumber(cmd) >= 0 then choiceN(44,tonumber(cmd)) end
+
+  choice(44,pag)
+end
+
+function choiceN(w,cap)
+  cls()
+  
+  print("\n\n"..green)
+  os.execute("figlet -c -f small GECKO")
+  os.execute("setterm --blink off -foreground white")
+  print("\n"..none)
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  centerTextInt(" "..centerTextSTR("Um gerador de capitulos aleatórios",w+1).." ",w+1)
+  --centerText("|"..string.rep(" ", w).."|",termWidth)
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  --centerText("|"..string.rep(" ", w).."|",termWidth)
+  centerTextInt("|"..centerTextSTR("coded by L7    Gecko v0.1 (beta)",w+1).."|",w+1)
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  centerTextInt(fade.."| O ultimo capitulo visto foi:",w+2)
+  centerTextInt("| Genesis 4",w+2)
+  os.execute("setterm --blink off -foreground white")
+  print("\n"..green)
+  for i = 1, 10 do
+    local str = ""
+    for j = 0, 8 do
+      if (i+10*j) < 10 then is = "0"..(i+10*j) else is = (i+10*j) end
+      if (i+10*j) <= livros[cap][2] then
+        --str = str.."["..(is).."] " --..string.rep(" ", 2)
+        if (i+10*j) <= 90 then
+          if (i+10*j) == 89 then str = str.."[..] " 
+          elseif (i+10*j) == 90 then str = str.."["..(livros[cap][2]).."] "
+          else str = str.."["..(is).."] " end
+        else
+          str = str.."["..(is).."] "
+        end
+      else 
+        str = str.."    "
+      end
+    end
+    centerTextInt(str,w)
+  end
+  print("\n")
+  centerTextInt("[".."88".."] MAIS...",w)
+  centerTextInt("[".."99".."] ALEATORIO",w)
+  centerTextInt("[".."00".."] VOLTAR",w)
+  print(none)
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  centerTextInt("|"..centerTextSTR("Escolha um capitulo ",w+1).."|",w+1)
+  centerText("+"..string.rep("-", w).."+",termWidth)
+  print("\n")
+  
+  local cmd = io.read()
+  
+  if tonumber(cmd) == 0 then choice(44,0) end
+  --if tonumber(cmd) == 88 then choice(w,(pag+1)%math.floor(66/10+0.5)) end
+  if tonumber(cmd) == 99 then random_cap() end
+  
+  if tonumber(cmd) and tonumber(cmd) >= 0 and tonumber(cmd) <= livros[cap][2] then random_cap(cap,tonumber(cmd)) end
+  
+  choiceN(44,cap)
+end
+
+function bye()
+  cls()
+  print("\n"..green)
+  os.execute("figlet -c -f small TCHAU")
+  os.exit()
+end
+
+choice(44,0)
+--random_cap()
+
+-- VERSE LEEF
