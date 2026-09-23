@@ -11,12 +11,13 @@ math.randomseed(os.time())
 local termWidth = tonumber(io.popen('tput cols'):read('*a'))
 
 red    = '\27[31m'
-green  = '\27[32m'
+--green  = '\27[32m'
 yellow = '\27[33m'
 blue   = '\27[34m'
 purple = '\27[35m'
 fade   = '\27[2m'
 none   = '\27[39m\27[0m'
+green = yellow
 
 -- Definir uma tabela com os nomes e números dos livros da Bíblia
 livros = {
@@ -274,14 +275,14 @@ function random_cap(indice,capitulo)
  if encontrado then
   -- Printar o texto na tela com os versículos formatados
   cls()
-  print("\n\n")
-  os.execute("setterm -foreground green")
+  print("\n\n"..green)
+  --os.execute("setterm -foreground green")
  -- os.execute("figlet -f standard BIBLIA")
  -- print("O livro e capítulo escolhidos são: \n")
   os.execute("figlet -c -f small "..FormatarAcentos(livro).." "..capitulo)
   os.execute("setterm -foreground white")
-  print("\n"..substituir_numeros(formatar_versiculos(texto, termWidth)).."\n")
-  os.execute("setterm -foreground green")
+  print("\n"..substituir_numeros(formatar_versiculos(texto, termWidth)).."\n"..green)
+  --os.execute("setterm -foreground green")
   centerText("Verse Gecko",termWidth)
   os.execute("setterm -foreground white --half-bright on")
   --centerText("https://github.com/suntzar/Verse-Gecko-Terminal")
@@ -292,8 +293,8 @@ function random_cap(indice,capitulo)
  else
   -- Printar uma mensagem de erro
  cls()
-  print("\n\n")
-  os.execute("setterm -foreground green")
+  print("\n\n"..green)
+  --os.execute("setterm -foreground green")
   os.execute("figlet -c -f small BIBLIA")
   os.execute("setterm -foreground white")
   print("\n")
@@ -310,7 +311,7 @@ end
 function choice(w,pag)
   cls()
   
-  print("\n\n"..green)
+  print("\n\n"..none..green)
   os.execute("figlet -c -f small GECKO")
   os.execute("setterm --blink off -foreground white")
   print("\n")
@@ -358,7 +359,7 @@ end
 function choiceN(w,cap)
   cls()
   
-  print("\n\n"..green)
+  print("\n\n"..none..green)
   os.execute("figlet -c -f small GECKO")
   os.execute("setterm --blink off -foreground white")
   print("\n"..none)
